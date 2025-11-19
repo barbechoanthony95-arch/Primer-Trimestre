@@ -1,0 +1,47 @@
+importar máquina
+desde tiempo importar dormir
+importar dht
+importar red
+importar urequests
+
+Configura el pin del sensor DHT11
+dht_pin = machine.Pin(4)
+
+Configure la conexión Wi-Fi
+SSID = "BARBERO"
+CONTRASEÑA = "87654321011902"
+
+def conectar_wifi():
+estación = red.WLAN(red.STA_IF)
+
+if not station.isconnected():
+print("Conectando a Wi-Fi...")
+station.active(True)
+station.connect(SSID, PASSWORD)
+while not station.isconnected():
+pass
+print("Conexión Wi-Fi establecida")
+print(station.ifconfig())
+def read_sensor_data():
+sensor = dht.DHT11(dht_pin)
+sensor.measure()
+temperature = sensor.temperature()
+humidity = sensor.humidity()
+return temperature, humidity
+def send_data_to_thingspeak(api_key, temperature, humidity):
+url = " https://api.thingspeak.com/update.json "
+params = "?api_key={}&field1={}&field2={}".format(api_key, temperature, humidity)
+response = urequests.get(url + params)
+print("Respuesta de ThingSpeak:", response.text)
+
+def main():
+conectar_wifi()
+mientras True:
+temperatura, humedad = leer_datos_sensor()
+imprimir("Temperatura: {:.1f}°C".format(temperatura))
+imprimir("Humedad: {:.1f}%".format(humedad))
+enviar_datos_a_thingspeak("EYLB3MNDJTOLDW4O", temperatura, humedad)
+dormir(5)
+
+Si el nombre es igual a 'main':
+main()
