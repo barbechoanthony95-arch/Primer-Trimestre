@@ -1,0 +1,77 @@
+delay(5000);
+} #include "WiFi.h"
+#include <ThingerESP32.h>    //Librería de la plataforma thinger.io
+// Parámetros del conexión con thinger.io
+#define usuario "PAULN2009"
+#define device_Id "Control_Leds"
+#define device_credentials "quYItCTrtiWNRIXe"
+
+ThingerESP32 thing(usuario, device_Id, device_credentials);
+
+
+// Parámetros de conexión WiFi
+const char WiFi_ssid[] = "CELERITY_PAUL";          //Nombre de red
+const char WiFi_password[] = "roy@lrumbl3"; //Clave de red
+
+// Configurar LEDS
+int led1 = 23;
+int led2 = 22;
+void setup()
+{
+  pinMode(led1, OUTPUT);
+  pinMode(led2, OUTPUT);
+  // Inicialización de la WiFi para comunicarse con la API
+  thing.add_wifi(WiFi_ssid, WiFi_password);
+ 
+  thing["Led1"] << digitalPin(led1);
+  
+  thing["Led2"] << digitalPin(led2);
+
+}
+
+void loop()
+{
+  thing.handle();
+} #include <WiFi.h>
+#include <ThingerESP32.h>
+
+//   Thinger.io
+#define USERNAME "JosePerez"
+#define DEVICE_ID "esp32_led"
+#define DEVICE_CREDENTIAL "123456789"
+
+// WiFi
+#define SSID "iPhone de Jose"
+#define SSID_PASSWORD "PerezM123456"
+
+ThingerESP32 thing(USERNAME, DEVICE_ID, DEVICE_CREDENTIAL);
+
+const int echoPin = 26;
+const int trigPin = 25;
+
+float distance = 0;
+
+void setup() {
+  Serial.begin(9600);
+
+  pinMode(echoPin, INPUT);
+  pinMode(trigPin, OUTPUT);
+
+  Serial.println("Ultrasonic sensor:");
+
+  //  Conectar WiFi para Thinger
+  thing.add_wifi(SSID, SSID_PASSWORD);
+
+  //  Recurso en Thinger.io
+  thing["distancia"] >> outputValue(distance);
+}
+
+void loop() {
+  distance = readDistance();
+
+  Serial.print(distance);
+  Serial.println(" cm");
+
+  thing.handle();   //  Mantiene conexión y envía datos
+  delay(400);
+}
