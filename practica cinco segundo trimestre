@@ -1,0 +1,70 @@
+// Función para medir distancia
+float readDistance() {
+  digitalWrite(trigPin, LOW);
+  delayMicroseconds(2);
+
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10);
+
+  digitalWrite(trigPin, LOW);
+
+  float d = pulseIn(echoPin, HIGH) / 58.00;
+  return d;
+} <div id="wrap">
+  <h2>🚗 Sensor de Proximidad</h2>
+
+  <div id="road">
+    <div id="car">🚗</div>
+  </div>
+
+  <p id="txt">0 cm</p>
+</div>
+
+<span id="data" style="display:none">{{value}}</span>
+
+<script>
+setInterval(() => {
+  let d = parseFloat(document.getElementById("data").innerText);
+  if (isNaN(d)) return;
+
+  // rango 0–200 cm
+  d = Math.max(0, Math.min(d, 200));
+  document.getElementById("txt").innerText = d.toFixed(1) + " cm";
+
+  // mapear distancia a posición
+  let pos = (d / 200) * 90; // %
+  document.getElementById("car").style.left = pos + "%";
+}, 500);
+</script>
+
+<style>
+#wrap{
+  background:#020617;
+  color:white;
+  padding:15px;
+  border-radius:16px;
+  text-align:center;
+  font-family:Arial;
+}
+
+#road{
+  position:relative;
+  width:100%;
+  height:60px;
+  background:#1e293b;
+  border-radius:30px;
+  margin:15px 0;
+}
+
+#car{
+  position:absolute;
+  top:10px;
+  left:0%;
+  font-size:32px;
+  transition:left 0.4s ease;
+}
+
+#txt{
+  font-size:22px;
+}
+</style>
