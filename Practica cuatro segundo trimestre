@@ -36,13 +36,13 @@ void loop()
 #include <ThingerESP32.h>
 
 //   Thinger.io
-#define USERNAME "JosePerez"
+#define USERNAME "anthony barbecho"
 #define DEVICE_ID "esp32_led"
 #define DEVICE_CREDENTIAL "123456789"
 
 // WiFi
-#define SSID "iPhone de Jose"
-#define SSID_PASSWORD "PerezM123456"
+#define SSID "iPhone de anthony"
+#define SSID_PASSWORD "anthoxs90988"
 
 ThingerESP32 thing(USERNAME, DEVICE_ID, DEVICE_CREDENTIAL);
 
