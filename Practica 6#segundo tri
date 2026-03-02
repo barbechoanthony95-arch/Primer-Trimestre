@@ -2,7 +2,7 @@
 #include <ThingerESP32.h>
 
 // Thinger.io
-#define USERNAME "JosePerez"
+#define USERNAME "anthony_xlp"
 #define DEVICE_ID "esp32_led"
 #define DEVICE_CREDENTIAL "123456789"
 
