@@ -1,0 +1,75 @@
+#include <SPI.h>
+#include <TFT_eSPI.h>
+#include <XPT2046_Touchscreen.h>
+
+// ===== TFT =====
+TFT_eSPI tft = TFT_eSPI();
+
+// ===== TOUCH =====
+#define XPT2046_IRQ 36
+#define XPT2046_MOSI 32
+#define XPT2046_MISO 39
+#define XPT2046_CLK 25
+#define XPT2046_CS 33
+
+SPIClass touchscreenSPI = SPIClass(VSPI);
+XPT2046_Touchscreen touchscreen(XPT2046_CS, XPT2046_IRQ);
+
+// Pantalla
+#define SCREEN_WIDTH 320
+#define SCREEN_HEIGHT 240
+
+int x, y, z;
+
+void setup() {
+  Serial.begin(115200);
+
+  // TFT
+  tft.init();
+  tft.setRotation(1);
+  tft.fillScreen(TFT_WHITE);
+
+  // Marco rojo
+  tft.drawRect(5, 5, 310, 230, TFT_RED);
+  tft.drawRect(10, 10, 300, 220, TFT_RED);
+
+  // Texto fijo
+  tft.setTextColor(TFT_RED, TFT_WHITE);
+  tft.drawCentreString("TOUCH ACTIVO", 160, 20, 2);
+
+  // TOUCH
+  touchscreenSPI.begin(XPT2046_CLK, XPT2046_MISO, XPT2046_MOSI, XPT2046_CS);
+  touchscreen.begin(touchscreenSPI);
+  touchscreen.setRotation(1);
+}
+
+void loop() {
+
+  if (touchscreen.tirqTouched() && touchscreen.touched()) {
+
+    TS_Point p = touchscreen.getPoint();
+
+    // Ajuste de coordenadas (puedes calibrar)
+    x = map(p.x, 200, 3700, 1, SCREEN_WIDTH);
+    y = map(p.y, 240, 3800, 1, SCREEN_HEIGHT);
+    z = p.z;
+
+    Serial.print("X: "); Serial.print(x);
+    Serial.print(" Y: "); Serial.print(y);
+    Serial.print(" Z: "); Serial.println(z);
+
+    // Limpiar zona de datos
+    tft.fillRect(20, 60, 280, 150, TFT_WHITE);
+
+    // Mostrar datos
+    tft.setTextColor(TFT_RED, TFT_WHITE);
+    tft.drawString("X: " + String(x), 40, 80, 2);
+    tft.drawString("Y: " + String(y), 40, 110, 2);
+    tft.drawString("Presion: " + String(z), 40, 140, 2);
+
+    // Dibujar cursor (puntito rojo)
+    tft.fillCircle(x, y, 5, TFT_RED);
+
+    delay(100);
+  }
+}
